@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Локальный учёт заказов и расходов нейрокреатора: доходы по дням, подписки на нейросети и чистая прибыль за месяц.">
+<title>Бюджет нейрокреатора — учёт заказов и расходов</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%237c3aed'/%3E%3Ctext x='32' y='44' text-anchor='middle' font-size='32'%3E%E2%82%BD%3C/text%3E%3C/svg%3E">
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    color-scheme: light;
+    --bg: #f5f6fa;
+    --card: #ffffff;
+    --text: #18181b;
+    --muted: #71717a;
+    --border: #e4e4e7;
+    --input: #fafafa;
+    --purple: #7c3aed;
+    --purple-light: #f3e8ff;
+    --positive: #16a34a;
+    --negative: #dc2626;
+    --radius: 18px;
+    --shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+}
+
+:root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #111118;
+    --card: #20202b;
+    --text: #f4f4f5;
+    --muted: #b0b0be;
+    --border: #3f3f50;
+    --input: #292936;
+    --purple: #c4b5fd;
+    --purple-light: #34264d;
+    --positive: #86efac;
+    --negative: #fca5a5;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+a {
+    color: var(--purple);
+}
+
+button:focus-visible,
+input:focus-visible,
+a:focus-visible {
+    outline: 3px solid var(--purple);
+    outline-offset: 3px;
+}
+
+.wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 18px 0 8px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: inherit;
+    font-weight: 800;
+}
+
+.brand-mark {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--purple-light);
+    color: var(--purple);
+    display: grid;
+    place-items: center;
+    font-weight: 900;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.ghost,
+.primary {
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+    border: 1px solid transparent;
+}
+
+.ghost {
+    background: var(--card);
+    color: var(--text);
+    border-color: var(--border);
+}
+
+.primary {
+    background: #7c3aed;
+    color: #fff;
+}
+
+.hero {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 28px;
+    align-items: start;
+    padding: 36px 0 20px;
+}
+
+.badge {
+    display: inline-block;
+    background: var(--purple-light);
+    color: var(--purple);
+    padding: 7px 12px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 14px;
+}
+
+.hero h1 {
+    font-size: clamp(32px, 5vw, 48px);
+    line-height: 1.15;
+    margin-bottom: 14px;
+}
+
+.lead {
+    color: var(--muted);
+    max-width: 560px;
+    margin-bottom: 22px;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px;
+    box-shadow: var(--shadow);
+}
+
+.card h2 {
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+
+.hint {
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+
+.field {
+    margin-bottom: 12px;
+}
+
+.field label {
+    display: block;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 6px;
+}
+
+.field input {
+    width: 100%;
+    padding: 11px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--input);
+    color: var(--text);
+}
+
+.preview {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
+
+.preview-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 0;
+}
+
+.preview-row strong {
+    overflow-wrap: anywhere;
+}
+
+.profit {
+    font-size: 26px;
+    font-weight: 900;
+    color: var(--positive);
+}
+
+.profit.is-loss {
+    color: var(--negative);
+}
+
+.features {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    padding: 12px 0 36px;
+}
+
+.feature h3 {
+    font-size: 17px;
+    margin: 8px 0 6px;
+}
+
+.feature p {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--purple-light);
+    display: grid;
+    place-items: center;
+    font-size: 21px;
+}
+
+.steps {
+    padding-bottom: 40px;
+}
+
+.steps h2,
+.privacy h2 {
+    margin-bottom: 14px;
+}
+
+.step-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.step-num {
+    font-weight: 900;
+    color: var(--purple);
+    margin-bottom: 6px;
+}
+
+.privacy {
+    padding-bottom: 40px;
+}
+
+footer {
+    border-top: 1px solid var(--border);
+    padding: 22px 0 36px;
+    color: var(--muted);
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 850px) {
+    .hero,
+    .features,
+    .step-list {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+    <nav class="nav" aria-label="Главная навигация">
+        <a class="brand" href="index.html">
+            <span class="brand-mark">₽</span>
+            Бюджет нейрокреатора
+        </a>
+        <div class="nav-links">
+            <a class="ghost" href="#demo">Попробовать</a>
+            <a class="ghost" href="#how">Как это работает</a>
+            <button type="button" class="ghost" id="themeToggle" aria-pressed="false">🌙 Тёмная тема</button>
+            <a class="primary" href="creator-budget.html">Открыть учёт</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div>
+            <div class="badge">ЛОКАЛЬНЫЙ УЧЁТ ДЛЯ НЕЙРОКРЕАТОРА</div>
+            <h1>Считайте заказы, расходы на нейросети и чистую прибыль</h1>
+            <p class="lead">
+                Записывайте каждый заказ по дате, следите за подписками на генерации,
+                продвижением и интернетом. Итог месяца считается сам. Данные остаются
+                в вашем браузере — сервер не нужен.
+            </p>
+            <div class="hero-actions">
+                <a class="primary" href="creator-budget.html">Перейти к учёту</a>
+                <a class="ghost" href="#demo">Быстрый расчёт на главной</a>
+            </div>
+        </div>
+
+        <aside class="card" id="demo">
+            <h2>Приветственный расчёт</h2>
+            <p class="hint">Оцените месяц за 20 секунд. Это черновик: полный журнал заказов — в учёте.</p>
+
+            <div class="field">
+                <label for="orders">Заказов за месяц</label>
+                <input id="orders" type="number" min="0" step="1" value="8">
+            </div>
+            <div class="field">
+                <label for="avgCheck">Средний чек, ₽</label>
+                <input id="avgCheck" type="number" min="0" step="100" value="5000">
+            </div>
+            <div class="field">
+                <label for="aiSpend">Нейросети и генерации, ₽</label>
+                <input id="aiSpend" type="number" min="0" step="100" value="2500">
+            </div>
+            <div class="field">
+                <label for="otherSpend">Продвижение и интернет, ₽</label>
+                <input id="otherSpend" type="number" min="0" step="100" value="1500">
+            </div>
+
+            <div class="preview">
+                <div class="preview-row">
+                    <span>Доход</span>
+                    <strong id="income">0 ₽</strong>
+                </div>
+                <div class="preview-row">
+                    <span>Расходы</span>
+                    <strong id="expenses">0 ₽</strong>
+                </div>
+                <div class="preview-row">
+                    <span>Остаток</span>
+                    <strong class="profit" id="profit">0 ₽</strong>
+                </div>
+            </div>
+
+            <div class="hero-actions" style="margin-top:16px">
+                <a class="primary" href="creator-budget.html">Открыть полный учёт</a>
+            </div>
+        </aside>
+    </section>
+
+    <section class="features" aria-label="Возможности">
+        <article class="card feature">
+            <div class="icon">📅</div>
+            <h3>Заказы по дням</h3>
+            <p>Дата, название и сумма каждого заказа. Доход за день и за месяц считается автоматически.</p>
+        </article>
+        <article class="card feature">
+            <div class="icon">🧠</div>
+            <h3>Расходы по категориям</h3>
+            <p>Нейросети, продвижение и интернет — отдельные блоки, чтобы было видно, куда уходит бюджет.</p>
+        </article>
+        <article class="card feature">
+            <div class="icon">💾</div>
+            <h3>Экспорт и копии</h3>
+            <p>Сохранение в браузере, экспорт JSON и восстановление резервной копии, если что-то пошло не так.</p>
+        </article>
+    </section>
+
+    <section class="steps" id="how">
+        <h2>Как начать</h2>
+        <div class="step-list">
+            <article class="card">
+                <div class="step-num">1</div>
+                <h3>Откройте учёт</h3>
+                <p class="hint">Выберите месяц и добавьте первый заказ. Ничего устанавливать не нужно.</p>
+            </article>
+            <article class="card">
+                <div class="step-num">2</div>
+                <h3>Внесите расходы</h3>
+                <p class="hint">Подписки на генерации, рекламу и связь — в своих разделах.</p>
+            </article>
+            <article class="card">
+                <div class="step-num">3</div>
+                <h3>Смотрите остаток</h3>
+                <p class="hint">Итог месяца и отчёт за период обновляются сразу. Для архива сделайте экспорт JSON.</p>
+            </article>
+        </div>
+    </section>
+
+    <section class="privacy">
+        <h2>Приватность</h2>
+        <div class="card">
+            <p class="hint" style="margin:0">
+                Приложение работает офлайн в браузере. Заказы и суммы хранятся в localStorage
+                на этом устройстве и не отправляются на сервер. Очистка данных сайта в браузере
+                удалит учёт — заранее сохраните JSON-экспорт.
+            </p>
+        </div>
+    </section>
+
+    <footer>
+        <span>Бюджет нейрокреатора · локальный калькулятор</span>
+        <a href="creator-budget.html">Перейти к учёту</a>
+    </footer>
+</div>
+
+<script>
+const themeKey = "creatorBudgetTheme";
+const currency = new Intl.NumberFormat("ru-RU", {
+    style: "currency",
+    currency: "RUB",
+    maximumFractionDigits: 0
+});
+
+const byId = id => document.getElementById(id);
+const money = value => currency.format(value);
+
+function applyTheme(theme) {
+    const dark = theme === "dark";
+    if (dark) {
+        document.documentElement.setAttribute("data-theme", "dark");
+    } else {
+        document.documentElement.removeAttribute("data-theme");
+    }
+    const button = byId("themeToggle");
+    button.textContent = dark ? "☀️ Светлая тема" : "🌙 Тёмная тема";
+    button.setAttribute("aria-pressed", String(dark));
+}
+
+function loadTheme() {
+    applyTheme(localStorage.getItem(themeKey) === "dark" ? "dark" : "light");
+}
+
+function toggleTheme() {
+    const next = document.documentElement.hasAttribute("data-theme") ? "light" : "dark";
+    localStorage.setItem(themeKey, next);
+    applyTheme(next);
+}
+
+function numberValue(id) {
+    const value = Number(byId(id).value);
+    return Number.isFinite(value) && value >= 0 ? value : 0;
+}
+
+function updatePreview() {
+    const income = numberValue("orders") * numberValue("avgCheck");
+    const expenses = numberValue("aiSpend") + numberValue("otherSpend");
+    const profit = income - expenses;
+
+    byId("income").textContent = money(income);
+    byId("expenses").textContent = money(expenses);
+    byId("profit").textContent = money(profit);
+    byId("profit").classList.toggle("is-loss", profit < 0);
+}
+
+byId("themeToggle").addEventListener("click", toggleTheme);
+["orders", "avgCheck", "aiSpend", "otherSpend"].forEach(id => {
+    byId(id).addEventListener("input", updatePreview);
+});
+
+loadTheme();
+updatePreview();
+</script>
+</body>
+</html>
