@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Заказы и расходы нейрокреатора</title>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@300;400;600;700&display=swap" rel="stylesheet">
+
 <style>
 * {
     box-sizing: border-box;
@@ -14,44 +18,65 @@
 
 :root {
     color-scheme: light;
-    --bg: #f5f6fa;
+    --milk: #f8f7f4;
+    --azure: #7cc8eb;
+    --lavender: #c9c2ff;
+    --mint: #bdefd9;
+    --graphite: #42464d;
+    --light-gray: #e6e7ea;
+
+    --bg: var(--milk);
     --card: #ffffff;
-    --text: #18181b;
-    --muted: #71717a;
-    --border: #e4e4e7;
-    --input: #fafafa;
-    --purple: #7c3aed;
-    --purple-light: #f3e8ff;
-    --red: #dc2626;
-    --red-light: #fee2e2;
-    --blue-light: #dbeafe;
-    --orange-light: #ffedd5;
-    --positive: #16a34a;
-    --negative: #dc2626;
+    --text: var(--graphite);
+    --muted: #7a7e86;
+    --border: var(--light-gray);
+    --input: var(--milk);
+    --surface-alt: var(--light-gray);
+    --accent: var(--azure);
+    --accent-text: #2b7da6;
+    --accent-light: #e2f3fb;
+    --secondary-light: var(--lavender);
+    --extra-light: var(--mint);
+    --red: #c2434b;
+    --red-light: #fbe4e5;
+    --positive: #2f8f68;
+    --negative: #c2434b;
+    --on-accent: var(--graphite);
+    --result-bg: var(--graphite);
+    --result-text: var(--milk);
+    --result-muted: #c9ccd2;
+    --result-positive: var(--mint);
+    --result-negative: #ffb8bc;
     --radius: 18px;
-    --shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+    --shadow: 0 8px 25px rgba(66, 70, 77, 0.08);
+    --font-heading: "Manrope", "Inter", Arial, sans-serif;
+    --font-body: "Inter", Arial, sans-serif;
 }
 
 :root[data-theme="dark"] {
     color-scheme: dark;
-    --bg: #111118;
-    --card: #20202b;
-    --text: #f4f4f5;
-    --muted: #b0b0be;
-    --border: #3f3f50;
-    --input: #292936;
-    --purple: #c4b5fd;
-    --purple-light: #34264d;
-    --red: #fca5a5;
-    --red-light: #49262c;
-    --blue-light: #223452;
-    --orange-light: #4b3222;
-    --positive: #86efac;
-    --negative: #fca5a5;
+    --bg: #2a2d32;
+    --card: #34383e;
+    --text: var(--milk);
+    --muted: #b4b8bf;
+    --border: #4b5058;
+    --input: #2e3237;
+    --surface-alt: #3d4249;
+    --accent: var(--azure);
+    --accent-text: var(--azure);
+    --accent-light: #2f4652;
+    --secondary-light: #45416a;
+    --extra-light: #304b41;
+    --red: #ffb8bc;
+    --red-light: #4d3236;
+    --positive: var(--mint);
+    --negative: #ffb8bc;
+    --result-bg: #1f2125;
 }
 
 body {
-    font-family: Arial, sans-serif;
+    font-family: var(--font-body);
+    font-weight: 400;
     background: var(--bg);
     color: var(--text);
     padding: 30px 16px 60px;
@@ -63,6 +88,16 @@ select {
     font: inherit;
 }
 
+h1,
+h2,
+h3,
+.result-title,
+.summary-value,
+.section-total strong,
+.main-profit-value {
+    font-family: var(--font-heading);
+}
+
 button {
     cursor: pointer;
 }
@@ -70,7 +105,7 @@ button {
 button:focus-visible,
 input:focus-visible,
 select:focus-visible {
-    outline: 3px solid var(--purple);
+    outline: 3px solid var(--accent);
     outline-offset: 3px;
 }
 
@@ -94,12 +129,13 @@ select:focus-visible {
 
 .badge {
     display: inline-block;
-    background: var(--purple-light);
-    color: var(--purple);
+    background: var(--secondary-light);
+    color: var(--text);
     padding: 7px 12px;
     border-radius: 100px;
     font-size: 13px;
-    font-weight: bold;
+    font-weight: 600;
+    letter-spacing: 0.04em;
 }
 
 .header-actions {
@@ -122,6 +158,8 @@ select:focus-visible {
 
 .header h1 {
     font-size: clamp(28px, 5vw, 44px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
     margin-bottom: 10px;
 }
 
@@ -188,7 +226,7 @@ select:focus-visible {
 
 .summary-value {
     font-size: 28px;
-    font-weight: 800;
+    font-weight: 700;
 }
 
 .income-value {
@@ -200,7 +238,7 @@ select:focus-visible {
 }
 
 .profit-value {
-    color: var(--purple);
+    color: var(--accent-text);
 }
 
 .grid {
@@ -237,19 +275,20 @@ select:focus-visible {
 }
 
 .ai-section .icon {
-    background: var(--purple-light);
+    background: var(--secondary-light);
 }
 
 .social-section .icon {
-    background: var(--blue-light);
+    background: var(--accent-light);
 }
 
 .internet-section .icon {
-    background: var(--orange-light);
+    background: var(--extra-light);
 }
 
 .section h2 {
     font-size: 19px;
+    font-weight: 600;
 }
 
 .description {
@@ -326,11 +365,11 @@ select:focus-visible {
     width: 100%;
     margin-top: 5px;
     padding: 11px;
-    border: 1px dashed var(--purple);
+    border: 1px dashed var(--accent);
     border-radius: 10px;
-    background: var(--purple-light);
-    color: var(--purple);
-    font-weight: bold;
+    background: var(--accent-light);
+    color: var(--text);
+    font-weight: 600;
 }
 
 .section-total {
@@ -340,11 +379,12 @@ select:focus-visible {
     border-top: 1px solid var(--border);
     padding-top: 16px;
     margin-top: 17px;
-    font-weight: bold;
+    font-weight: 600;
 }
 
 .section-total strong {
     font-size: 19px;
+    font-weight: 700;
 }
 
 .empty,
@@ -369,7 +409,7 @@ select:focus-visible {
 }
 
 .legacy {
-    background: var(--purple-light);
+    background: var(--surface-alt);
     padding: 15px;
     border-radius: 12px;
     margin-bottom: 16px;
@@ -382,14 +422,15 @@ select:focus-visible {
 
 .result {
     margin-top: 24px;
-    background: #18181b;
-    color: white;
+    background: var(--result-bg);
+    color: var(--result-text);
     border-radius: 22px;
     padding: 28px;
 }
 
 .result-title {
     font-size: 22px;
+    font-weight: 600;
     margin-bottom: 20px;
 }
 
@@ -398,30 +439,30 @@ select:focus-visible {
     justify-content: space-between;
     gap: 20px;
     padding: 11px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(248, 247, 244, 0.14);
 }
 
 .result-line span {
-    color: #d4d4d8;
+    color: var(--result-muted);
 }
 
 .main-profit {
     margin-top: 22px;
     padding: 22px;
     border-radius: 16px;
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(248, 247, 244, 0.08);
 }
 
 .main-profit-label {
     font-size: 14px;
-    color: #d4d4d8;
+    color: var(--result-muted);
     margin-bottom: 7px;
 }
 
 .main-profit-value {
     font-size: clamp(30px, 6vw, 44px);
-    font-weight: 900;
-    color: #86efac;
+    font-weight: 700;
+    color: var(--result-positive);
 }
 
 .summary-value,
@@ -431,7 +472,7 @@ strong {
 }
 
 .formula {
-    color: #a1a1aa;
+    color: var(--result-muted);
     font-size: 13px;
     margin-top: 8px;
 }
@@ -446,17 +487,17 @@ strong {
     border: none;
     padding: 12px 18px;
     border-radius: 10px;
-    font-weight: bold;
+    font-weight: 600;
 }
 
 .save {
-    background: #7c3aed;
-    color: white;
+    background: var(--accent);
+    color: var(--on-accent);
 }
 
 .reset {
-    background: #3f3f46;
-    color: white;
+    background: var(--light-gray);
+    color: var(--graphite);
 }
 
 .period-report {
@@ -492,8 +533,12 @@ strong {
     padding: 10px 0;
 }
 
+.report-table th {
+    font-weight: 600;
+}
+
 .report-table tfoot {
-    font-weight: bold;
+    font-weight: 600;
 }
 
 .report-positive {
@@ -1715,12 +1760,12 @@ function calculate() {
     byId("summaryProfit").style.color =
         stats.profit > 0 ? "var(--positive)" :
         stats.profit < 0 ? "var(--negative)" :
-        "var(--purple)";
+        "var(--accent-text)";
 
     byId("resultProfit").style.color =
-        stats.profit > 0 ? "#86efac" :
-        stats.profit < 0 ? "#fca5a5" :
-        "#ffffff";
+        stats.profit > 0 ? "var(--result-positive)" :
+        stats.profit < 0 ? "var(--result-negative)" :
+        "var(--result-text)";
 
     const daily = byId("dailyTotals");
     daily.innerHTML = "";
